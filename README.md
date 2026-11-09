@@ -48,39 +48,3 @@ The tests in `src/test/kotlin/TypeCheckerTest.kt` cover valid and invalid
 expressions and statements, including undeclared variables, mismatched operand
 types, nested expressions, and control-flow conditions.
 
-## Interpreter exercise
-
-Implement `Expr.evaluate`, `Statement.execute`, and `Program.interpret` in
-`Interpreter.kt`. Expressions evaluate to `RuntimeValue.Integer` or
-`RuntimeValue.Boolean`; failures are returned as
-`InterpretationResult.Failure`. Statements return the updated `Store` on
-success.
-
-A program starts with every declared variable uninitialized. Assignments may
-initialize declared variables, but reading a variable before it has been
-assigned, assigning to an undeclared variable, using a value that does not
-match the declared type, or declaring the same name more than once should
-produce a failure. The final store contains initialized variables only.
-Execute sequences in order, choose the appropriate `if` branch, and repeat a
-`while` body until its Boolean condition is false. Labels have no effect on
-execution. Programs are expected to be well-typed, but the interpreter should
-report runtime failures rather than crash when an invalid program is executed.
-
-`src/test/kotlin/InterpreterTest.kt` includes examples for expression
-evaluation, assignment, branching, loops, uninitialized variables, duplicate
-declarations, and runtime type errors.
-
-## Typing rules to implement
-
-- Integer literals have type `int`; Boolean literals have type `bool`.
-- A variable has the type assigned to its name in the environment.
-- Arithmetic operands must both be `int`; the result is `int`.
-- Both operands of `<` must be `int`; its result is `bool`.
-- Equality operands must have the same type; its result is `bool`.
-- `not` takes a `bool` and returns `bool`; both operands of `and` must be
-  `bool`, and its result is `bool`.
-- For an assignment, the target must be declared and the expression must have
-  the target's declared type.
-- `skip` is well-typed. A sequence is well-typed when both statements are.
-- An `if` or `while` condition must have type `bool`; its nested statements
-  must also be well-typed.
