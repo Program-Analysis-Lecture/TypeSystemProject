@@ -1,3 +1,5 @@
+package whilelang
+
 /**
  * Abstract syntax for the WHILE language used in the type-checker exercise.
  *

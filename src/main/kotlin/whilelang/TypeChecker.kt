@@ -1,3 +1,5 @@
+package whilelang
+
 /**
  * The types assigned to variables by a program's declarations.
  *

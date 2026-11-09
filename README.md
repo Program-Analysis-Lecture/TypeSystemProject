@@ -1,50 +1,36 @@
-# WHILE Type-Checker Exercise
+# Type System Exercises
 
-Implement a type checker and interpreter for the small WHILE language in
-`src/main/kotlin`. The syntax tree is defined in `WhileLanguage.kt`; the
-type-checker and interpreter exercises are in `TypeChecker.kt` and
-`Interpreter.kt`.
+Complete every `TODO` in the starter code. Run all tests with `./gradlew test`
+(`gradlew.bat test` on Windows); a test fails until its `TODO` is implemented.
 
-## Getting started
+## 1. WHILE type checker (`whilelang/TypeChecker.kt`)
 
-1. Open the project in IntelliJ IDEA, or use a terminal with a compatible JDK.
-2. Read `WhileLanguage.kt` to see the expression and statement forms.
-3. Implement `Expr.typeOf` and `Statement.typeOf` in `TypeChecker.kt`.
-4. Implement the interpreter functions in `Interpreter.kt`.
-5. Run the tests with `./gradlew test` (on Windows, use `gradlew.bat test`).
+Implement `Expr.typeOf` and `Statement.typeOf`. The AST is in `WhileLanguage.kt`.
 
-The starter functions contain `TODO`s, so tests for an exercise are expected
-to fail until its implementation is complete. `./gradlew testClasses` compiles
-the tests without running them.
+- Literals are `int` or `bool`; a variable has its declared type in the environment, and an undeclared one is an error.
+- `+ - * <` take `int` operands; `+ - *` give `int`, `<` gives `bool`.
+- `=` needs operands of the same type and gives `bool`; `not` and `and` take and give `bool`.
+- Assignment: the target must be declared and the value must match its type.
+- `if` and `while` conditions must be `bool`; sequences and branches must all be well-typed.
+- A well-typed statement returns `Success(StatementType.OK)`; anything else is a `Failure`. Labels do not affect typing.
 
-## Language overview
+Tests: `whilelang/TypeCheckerTest.kt`.
 
-- Types: `int` and `bool`.
-- Expressions: integer and Boolean literals, variables, integer arithmetic
-  (`+`, `-`, `*`), integer comparison (`<`), equality (`=`), Boolean negation
-  (`not`), and conjunction (`and`).
-- Statements: labeled assignment and `skip`, sequencing, labeled `if`, and
-  labeled `while`.
-- Programs declare their variables and types before the statement.
+## 2. WHILE interpreter (`whilelang/Interpreter.kt`)
 
-The Kotlin classes for these forms are in `WhileLanguage.kt`. For example,
-`Arithmetic(ArithmeticOperator.ADD, left, right)` represents `left + right`;
-`VariableDeclaration("count", Type.INT)` declares an integer variable.
+Implement `Expr.evaluate`, `Statement.execute` and `Program.interpret`.
 
-## Type-checker interface
+- Declared variables start uninitialized; the final store holds only assigned ones.
+- Return a `Failure` (do not crash) for reading an uninitialized variable, assigning to an undeclared one, a value of the wrong type, a non-`bool` guard, or duplicate declarations.
+- Labels do not affect execution.
 
-`TypeEnvironment` maps variable names to their declared types. Use the
-environment to resolve every `Variable`; an undeclared name is an error.
-Expression checking returns `TypeCheckResult.Success(Type.INT)` or
-`TypeCheckResult.Success(Type.BOOL)` for valid expressions, and
-`TypeCheckResult.Failure` for invalid ones.
+Tests: `whilelang/InterpreterTest.kt`.
 
-Statement checking returns `TypeCheckResult.Success(StatementType.OK)` when
-the whole statement is well-typed, or `TypeCheckResult.Failure` otherwise.
-Check all subexpressions and nested statements, not only the outermost node.
-Statement labels identify source locations but do not affect typing.
+## 3. Locals and casts with SootUp (`soot/MethodInspector.kt`)
 
-The tests in `src/test/kotlin/TypeCheckerTest.kt` cover valid and invalid
-expressions and statements, including undeclared variables, mismatched operand
-types, nested expressions, and control-flow conditions.
+Implement `listLocals` (name and type of each local, sorted by name) and `listCasts` (every cast in a method's Jimple body). Hints are in the KDoc.
 
+- Run `./gradlew runSoot` to print the Jimple, locals and casts of `CastExample`.
+- Inspect your own classes: `./gradlew runSoot --args="<classpath-dir> <class-name> [method-name]"`.
+
+Tests: `soot/MethodInspectorTest.kt`.

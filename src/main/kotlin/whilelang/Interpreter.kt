@@ -1,3 +1,5 @@
+package whilelang
+
 /** Runtime values produced by evaluating WHILE expressions. */
 sealed interface RuntimeValue {
     data class Integer(val value: Int) : RuntimeValue
@@ -39,7 +41,7 @@ fun Statement.execute(
  * Interpret this program starting with all declared variables uninitialized.
  *
  * Students: reject duplicate declarations, build the declaration environment,
- * and execute the body. The returned store contains initialized variables only.
+ * and whilelang.execute the body. The returned store contains initialized variables only.
  */
 fun Program.interpret(): InterpretationResult<Store> =
     TODO("Implement program interpretation")
